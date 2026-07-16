@@ -1,0 +1,866 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Google Freshers Party Planner & Pitch Command Center</title>
+  <link rel="stylesheet" href="/src/style.css">
+</head>
+<body>
+
+  <!-- ============================================== -->
+  <!-- SCREEN 1: ENTRANCE PRELOADER                   -->
+  <!-- ============================================== -->
+  <div id="screen-preloader" class="fullscreen-screen">
+    <!-- Screen 1 Background Animation: Constellation Flow Canvas -->
+    <canvas id="canvas-preloader" style="position: absolute; top: 0; left: 0; width: 100vw; height: 100vh; z-index: 0; pointer-events: none;"></canvas>
+    
+    <div class="preloader-content">
+      <div class="preloader-logo">N</div>
+      <h2>Google Freshers Party Command Center</h2>
+      <p class="subtitle">AI Planning Night With Nano Banana</p>
+      
+      <div class="preloader-progress-container">
+        <div id="preloader-progress-bar" class="preloader-progress-fill"></div>
+      </div>
+      <div id="preloader-percentage-lbl" class="preloader-percentage">0%</div>
+      
+      <button id="btn-preloader-proceed" class="btn btn-primary hidden" style="margin-top: 1.5rem;">
+        Proceed to Organizer Login &rarr;
+      </button>
+    </div>
+  </div>
+
+  <!-- ============================================== -->
+  <!-- SCREEN 2: ORGANIZER LOGIN PORTAL               -->
+  <!-- ============================================== -->
+  <div id="screen-login" class="fullscreen-screen hidden">
+    <!-- Screen 2 Background Animation: Sine Wave Flow Canvas -->
+    <canvas id="canvas-login" style="position: absolute; top: 0; left: 0; width: 100vw; height: 100vh; z-index: 0; pointer-events: none;"></canvas>
+    
+    <div class="login-card glass-card">
+      <div class="login-header">
+        <div class="login-logo" style="background: white; border-radius: 50%; box-shadow: 0 0 15px rgba(255,255,255,0.15); display: inline-flex; align-items: center; justify-content: center; width: 50px; height: 50px; margin-bottom: 1rem;">
+          <!-- Official Google Logo SVG in Header -->
+          <svg width="28" height="28" viewBox="0 0 18 18">
+            <path d="M17.64 9.2c0-.637-.057-1.251-.164-1.84H9v3.481h4.844c-.209 1.125-.843 2.078-1.796 2.717v2.259h2.908c1.702-1.567 2.684-3.875 2.684-6.617z" fill="#4285F4"/>
+            <path d="M9 18c2.43 0 4.467-.806 5.956-2.18l-2.908-2.259c-.806.54-1.837.86-3.048.86-2.344 0-4.328-1.584-5.036-3.711H.957v2.332C2.438 15.938 5.482 18 9 18z" fill="#34A853"/>
+            <path d="M3.964 10.71A5.365 5.365 0 0 1 3.682 9c0-.593.102-1.17.282-1.71V4.958H.957A8.996 8.996 0 0 0 0 9c0 1.45.346 2.82.957 4.042l3.007-2.332z" fill="#FBBC05"/>
+            <path d="M9 3.58c1.32 0 2.507.454 3.44 1.345l2.582-2.58C13.463.894 11.426 0 9 0 5.482 0 2.438 2.062.957 4.958L3.964 7.29C4.672 5.163 6.656 3.58 9 3.58z" fill="#EA4335"/>
+          </svg>
+        </div>
+        <h3>Organizer Verification Portal</h3>
+        <p>Enter session credentials to unlock the 15-dashboard suite</p>
+      </div>
+      
+      <div class="form-group" style="margin-bottom: 1rem;">
+        <label for="input-login-name">Organizer Name</label>
+        <input type="text" id="input-login-name" class="input-custom" placeholder="e.g. Priyan Sen" value="Priyan Sen">
+      </div>
+      
+      <div class="form-group" style="margin-bottom: 1rem;">
+        <label for="input-login-email">College Email Address</label>
+        <input type="email" id="input-login-email" class="input-custom" placeholder="e.g. priyan.cse@college.edu" value="priyan.cse@college.edu">
+      </div>
+      
+      <div class="form-group" style="margin-bottom: 1.5rem;">
+        <label for="select-login-role">Organizer Role</label>
+        <select id="select-login-role" class="theme-selector-dropdown">
+          <option value="Lead Organizer">Lead Organizer</option>
+          <option value="F&B Coordinator">F&B Coordinator</option>
+          <option value="Technical Stage Director">Technical Stage Director</option>
+          <option value="Marketing & Design Lead">Marketing & Design Lead</option>
+        </select>
+      </div>
+      
+      <button id="btn-login-submit" class="btn btn-primary" style="width: 100%; justify-content: center;">
+        Authenticate & Launch Suite &rarr;
+      </button>
+
+      <div style="text-align: center; margin: 1rem 0; font-size: 0.75rem; color: var(--text-muted); position: relative;">
+        <span style="background: #0b0f19; padding: 0 0.5rem; z-index: 1; position: relative;">OR SIGN IN SECURELY</span>
+        <hr style="position: absolute; top: 50%; left: 0; right: 0; border: none; border-top: 1px solid var(--border-color); z-index: 0; margin: 0;">
+      </div>
+
+      <!-- Real Google Auth Button Trigger -->
+      <button id="btn-google-signin" class="btn" style="width: 100%; display: flex; align-items: center; justify-content: center; background: white; color: #1f2937; border: 1px solid #e5e7eb; font-weight: 600; font-size: 0.85rem; border-radius: 8px; padding: 0.65rem; transition: background 0.2s ease, transform 0.1s ease; cursor: pointer;">
+        <svg width="18" height="18" viewBox="0 0 18 18" style="margin-right: 8px;">
+          <path d="M17.64 9.2c0-.637-.057-1.251-.164-1.84H9v3.481h4.844c-.209 1.125-.843 2.078-1.796 2.717v2.259h2.908c1.702-1.567 2.684-3.875 2.684-6.617z" fill="#4285F4"/>
+          <path d="M9 18c2.43 0 4.467-.806 5.956-2.18l-2.908-2.259c-.806.54-1.837.86-3.048.86-2.344 0-4.328-1.584-5.036-3.711H.957v2.332C2.438 15.938 5.482 18 9 18z" fill="#34A853"/>
+          <path d="M3.964 10.71A5.365 5.365 0 0 1 3.682 9c0-.593.102-1.17.282-1.71V4.958H.957A8.996 8.996 0 0 0 0 9c0 1.45.346 2.82.957 4.042l3.007-2.332z" fill="#FBBC05"/>
+          <path d="M9 3.58c1.32 0 2.507.454 3.44 1.345l2.582-2.58C13.463.894 11.426 0 9 0 5.482 0 2.438 2.062.957 4.958L3.964 7.29C4.672 5.163 6.656 3.58 9 3.58z" fill="#EA4335"/>
+        </svg>
+        Sign in with Google
+      </button>
+    </div>
+  </div>
+
+  <!-- ============================================== -->
+  <!-- SCREEN 3: MAIN APPLICATION COMMAND CENTER      -->
+  <!-- ============================================== -->
+  <div id="screen-main" class="hidden" style="display: flex; min-height: 100vh;">
+    <!-- Screen 3 Background Animation: Cosmic Starfield Canvas -->
+    <canvas id="canvas-starfield" style="position: fixed; top: 0; left: 0; width: 100vw; height: 100vh; z-index: -10; pointer-events: none;"></canvas>
+
+    <!-- Sidebar Navigation Drawer -->
+    <aside class="sidebar">
+      <div class="brand">
+        <div class="brand-logo">N</div>
+        <div class="brand-text">
+          <h1>Google Gemini</h1>
+          <span id="sidebar-active-theme-label">Galactic Carnival</span>
+        </div>
+      </div>
+
+      <ul class="nav-menu">
+        <li class="nav-item"><button class="active" data-target="panel-gemini-copilot">🤖 Gemini AI Copilot</button></li>
+        <li class="nav-item"><button data-target="panel-prompt-enhancer">🧠 Prompt Enhancer</button></li>
+        <li class="nav-item"><button data-target="panel-pitch-coach">🎤 Pitch Speech Coach</button></li>
+        <li class="nav-item"><button data-target="panel-iteration-logger">🔄 Iteration Logger</button></li>
+        <li class="nav-item"><button data-target="panel-audience-analyzer">📊 Audience Analyzer</button></li>
+        <li class="nav-item"><button data-target="panel-meet-voting">🗳️ Meet Voting Simulator</button></li>
+        <li class="nav-item"><button data-target="panel-whatsapp-hub">📢 WhatsApp Group Hub</button></li>
+        <li class="nav-item"><button data-target="panel-persona-adapter">🎭 Persona Adapter</button></li>
+        <li class="nav-item"><button data-target="panel-activity-planner">🏆 Activity XP Planner</button></li>
+        <li class="nav-item"><button data-target="panel-speech-analyzer">⏱️ Speech Rate Analyzer</button></li>
+        <li class="nav-item"><button data-target="panel-chronology-sheet">🕒 Cue Sheet timeline</button></li>
+        <li class="nav-item"><button data-target="panel-logistics-proposal">💰 Budget & Proposals</button></li>
+        <li class="nav-item"><button data-target="panel-submission-compiler">⚡ Submission Compiler</button></li>
+        <li class="nav-item"><button data-target="panel-swag-designer">🛍️ Swag Hoodie Designer</button></li>
+        <li class="nav-item"><button data-target="panel-poster-simulator">🚀 3D Poster Simulator</button></li>
+      </ul>
+
+      <!-- Theme Selector Dropdown in Sidebar Footer -->
+      <div class="sidebar-footer">
+        <label for="theme-select">Active Theme</label>
+        <select id="theme-select" class="theme-selector-dropdown">
+          <option value="galactic-carnival">Galactic Carnival</option>
+          <option value="pixel-forest">Pixelated Pixie Forest</option>
+          <option value="retro-futuristic-oasis">Retro-Futuristic Oasis</option>
+        </select>
+      </div>
+    </aside>
+
+    <!-- Main Content Workspace Area -->
+    <main class="main-content">
+      <header class="app-header">
+        <div class="header-title">
+          <h2 id="header-theme-title">Galactic Carnival</h2>
+          <p>Hackathon Organizer Dashboard Command Center</p>
+        </div>
+        
+        <div class="header-actions" style="display: flex; align-items: center; gap: 0.75rem;">
+          <!-- Personalized Organizer Badge Profile Capsule -->
+          <div class="organizer-badge-profile" style="display: flex; align-items: center; gap: 0.65rem; background: rgba(255, 255, 255, 0.03); border: 1px solid var(--border-color); border-radius: 40px; padding: 0.35rem 0.65rem 0.35rem 0.45rem; box-shadow: 0 4px 15px rgba(0,0,0,0.15); transition: border-color 0.3s ease;">
+            <div class="avatar-icon" style="background: linear-gradient(135deg, var(--accent-color) 0%, #06b6d4 100%); width: 30px; height: 30px; border-radius: 50%; display: flex; align-items: center; justify-content: center; font-weight: 800; font-size: 0.85rem; color: white; box-shadow: 0 0 10px var(--accent-glow);">O</div>
+            <div class="profile-details" style="display: flex; flex-direction: column; line-height: 1.2;">
+              <span id="header-profile-name" class="profile-name" style="font-size: 0.8rem; font-weight: 700; color: white;">Priyan Sen</span>
+              <span id="header-profile-role" class="profile-role" style="font-size: 0.65rem; color: var(--text-secondary);">Lead Organizer</span>
+            </div>
+            
+            <!-- Unique Sign Out integrated button -->
+            <button id="btn-sign-out" title="Sign Out of Session" style="background: rgba(239, 68, 68, 0.1); border: 1px solid rgba(239, 68, 68, 0.25); color: #f87171; width: 24px; height: 24px; border-radius: 50%; display: flex; align-items: center; justify-content: center; cursor: pointer; margin-left: 0.5rem; transition: all 0.2s ease; font-size: 0.7rem;">
+              🚪
+            </button>
+          </div>
+
+          <button id="btn-reset-data" class="btn">
+            🔄 Reset Session Data
+          </button>
+        </div>
+      </header>
+
+      <!-- ============================================== -->
+      <!-- DASHBOARD 1: GEMINI AI COPILOT                 -->
+      <!-- ============================================== -->
+      <section id="panel-gemini-copilot" class="tab-content active">
+        <div class="dashboard-grid">
+          <!-- Left Column (Brainstorm controls) -->
+          <div class="glass-card flex-col gap-1">
+            <div class="card-title">🤖 Gemini Brainstorm Controls</div>
+            <div class="form-group">
+              <label for="select-copilot-category">Choose Brainstorm Focus</label>
+              <select id="select-copilot-category" class="theme-selector-dropdown">
+                <option value="Theme Name Ideas">Theme Name Ideas</option>
+                <option value="Tagline Options">Tagline Options</option>
+                <option value="Interactive Games rules">Interactive Games rules</option>
+                <option value="Hype Greeting Hook">Hype Greeting Hook</option>
+              </select>
+            </div>
+            
+            <div class="form-group">
+              <label for="select-copilot-vibe">Vibe Dial</label>
+              <select id="select-copilot-vibe" class="theme-selector-dropdown">
+                <option value="Futuristic Cyberpunk">Futuristic Cyberpunk</option>
+                <option value="Mystical retro">Mystical retro</option>
+                <option value="Minimalist Space Station">Minimalist Space Station</option>
+              </select>
+            </div>
+
+            <!-- Features checklist items -->
+            <div class="item-list gap-1" style="margin-top: 1rem;">
+              <label class="info-lbl">Active Copilot Features (20+ Total)</label>
+              <div class="checkbox-custom-item"><input type="checkbox" id="check-copilot-keyword" checked> 1. Keyword extraction</div>
+              <div class="checkbox-custom-item"><input type="checkbox" id="check-copilot-tagline" checked> 2. Tagline constructor</div>
+              <div class="checkbox-custom-item"><input type="checkbox" id="check-copilot-emojis" checked> 3. Emoji theme injection</div>
+              <div class="checkbox-custom-item"><input type="checkbox" id="check-copilot-comparer" checked> 4. Concept comparison splits</div>
+              <div class="checkbox-custom-item"><input type="checkbox" id="check-copilot-scores" checked> 5. Feasibility rating checkers</div>
+            </div>
+
+            <button id="btn-copilot-generate" class="btn btn-primary" style="margin-top: 1rem;">
+              🤖 Query Gemini Mock Brainstormer
+            </button>
+          </div>
+
+          <!-- Right Column (Response Display) -->
+          <div class="glass-card flex-col gap-1">
+            <div class="card-title">✨ Gemini Suggestion Results</div>
+            <div id="copilot-output-display" class="prompt-output-box" style="white-space: pre-wrap; min-height: 250px;">
+              Select focus, vibe and trigger suggestions. Output appears here...
+            </div>
+            <div class="prompt-actions">
+              <button id="btn-copilot-copy" class="btn">📋 Copy Selection</button>
+              <button id="btn-copilot-clear" class="btn">🧹 Clear Display</button>
+            </div>
+          </div>
+        </div>
+      </section>
+
+      <!-- ============================================== -->
+      <!-- DASHBOARD 2: NANO BANANA PROMPT ENHANCER        -->
+      <!-- ============================================== -->
+      <section id="panel-prompt-enhancer" class="tab-content">
+        <div class="dashboard-grid">
+          <!-- Left Controls -->
+          <div class="glass-card flex-col gap-1">
+            <div class="card-title">🧠 Weight & Styling Controls</div>
+            <div class="form-group">
+              <label for="slider-prompt-subject">Subject Weight (<span id="lbl-prompt-subject">1.0</span>)</label>
+              <input type="range" id="slider-prompt-subject" min="0.5" max="2.0" step="0.1" value="1.0" class="input-custom">
+            </div>
+            <div class="form-group">
+              <label for="slider-prompt-background">Background Weight (<span id="lbl-prompt-background">1.0</span>)</label>
+              <input type="range" id="slider-prompt-background" min="0.5" max="2.0" step="0.1" value="1.0" class="input-custom">
+            </div>
+            <div class="form-group">
+              <label for="select-prompt-style">Artistic Format</label>
+              <select id="select-prompt-style" class="theme-selector-dropdown">
+                <option value="Cinematic Octane 3D">Cinematic Octane 3D</option>
+                <option value="Retro 8-Bit Pixel Art">Retro 8-Bit Pixel Art</option>
+                <option value="Cyberpunk Neon Concept Art">Cyberpunk Neon Concept Art</option>
+              </select>
+            </div>
+            <div class="form-group">
+              <label for="select-prompt-lighting">Lighting Ambient</label>
+              <select id="select-prompt-lighting" class="theme-selector-dropdown">
+                <option value="strobe lasers & purple spotlights">Laser Spotlight</option>
+                <option value="bioluminescent mushroom glow">Bioluminescent Glow</option>
+                <option value="cyan and magenta sunsets reflection">Cyan & Magenta sunset</option>
+              </select>
+            </div>
+            <div class="form-group">
+              <label for="select-prompt-camera">Camera Perspective</label>
+              <select id="select-prompt-camera" class="theme-selector-dropdown">
+                <option value="wide-angle lens, cinematic panorama">Wide-Angle Panorama</option>
+                <option value="drone shots, high elevation aerial view">Drone High View</option>
+                <option value="close-up view, shallow depth of field">Close-up Macro</option>
+              </select>
+            </div>
+            
+            <div class="form-group">
+              <label>Exclusions Tags (Negative Prompt)</label>
+              <div class="btn-group-grid">
+                <button class="tag-btn selected" data-val="blurry">blurry</button>
+                <button class="tag-btn selected" data-val="low resolution">low res</button>
+                <button class="tag-btn" data-val="text overlays">text overlays</button>
+                <button class="tag-btn" data-val="deformed hands">deformed</button>
+              </div>
+            </div>
+          </div>
+
+          <!-- Right Prompt Viewer -->
+          <div class="glass-card flex-col gap-1">
+            <div class="card-title">🍌 Prompt Exporter</div>
+            <div class="form-group">
+              <label for="enhanced-prompt-output">Compiled Prompt</label>
+              <div id="enhanced-prompt-output" class="prompt-output-box" style="min-height: 180px;"></div>
+            </div>
+            <div class="prompt-actions">
+              <button id="btn-prompt-random" class="btn">🎲 Randomize Tags</button>
+              <button id="btn-prompt-copy" class="btn btn-primary">✨ Copy Prompt</button>
+            </div>
+          </div>
+        </div>
+      </section>
+
+      <!-- ============================================== -->
+      <!-- DASHBOARD 3: PITCH SPEECH COACH                -->
+      <!-- ============================================== -->
+      <section id="panel-pitch-coach" class="tab-content">
+        <div class="dashboard-grid">
+          <!-- Text script editor -->
+          <div class="glass-card flex-col gap-1">
+            <div class="card-title">📝 Script Editor & Metronome</div>
+            <textarea id="coach-script-input" class="textarea-custom" style="height: 250px;"></textarea>
+            <div class="prompt-actions" style="margin-top: 0.5rem;">
+              <button id="btn-coach-autogen" class="btn">⚡ Load Draft</button>
+              <button id="btn-coach-inject" class="btn">🫁 Inject Breathing Markers</button>
+            </div>
+          </div>
+
+          <!-- Teleprompter display -->
+          <div class="glass-card flex-col gap-1">
+            <div class="card-title justify-between">
+              <span>🎤 Teleprompter (60s Limit)</span>
+              <span id="coach-pacing-badge" class="pace-badge info">Waiting...</span>
+            </div>
+            <div class="teleprompter-card">
+              <div class="teleprompter-overlay-top"></div>
+              <div class="teleprompter-guideline"></div>
+              <div class="teleprompter-content" id="coach-teleprompter-scroll">
+                <div class="teleprompter-paragraph" id="coach-teleprompter-text">
+                  Your script text will scroll here...
+                </div>
+              </div>
+              <div class="teleprompter-overlay-bottom"></div>
+            </div>
+
+            <!-- Controls row -->
+            <div class="timer-controls" style="margin-top: 1rem;">
+              <div class="profile-details" style="flex: 1;">
+                <span style="font-size: 0.75rem; color: var(--text-secondary)">Speed (Secs): <span id="coach-lbl-speed">45s</span></span>
+                <input type="range" id="coach-slider-speed" min="30" max="90" step="5" value="45" style="width: 100%">
+              </div>
+              <button id="btn-coach-start" class="btn btn-primary">▶️ Start</button>
+              <button id="btn-coach-reset" class="btn">⏱️ Reset</button>
+            </div>
+          </div>
+        </div>
+      </section>
+
+      <!-- ============================================== -->
+      <!-- DASHBOARD 4: GEMINI ITERATION LOGGER            -->
+      <!-- ============================================== -->
+      <section id="panel-iteration-logger" class="tab-content">
+        <div class="dashboard-grid">
+          <div class="glass-card flex-col gap-1" style="grid-column: span 2;">
+            <div class="card-title">🔄 Gemini Iteration Change Log</div>
+            <div style="overflow-x: auto;">
+              <table class="database-table">
+                <thead>
+                  <tr>
+                    <th>Version</th>
+                    <th>Time Stamp</th>
+                    <th>Refined Adjustments Description</th>
+                    <th>Score / 100</th>
+                    <th>Action</th>
+                  </tr>
+                </thead>
+                <tbody id="logger-table-tbody">
+                  <!-- Populated dynamically -->
+                </tbody>
+              </table>
+            </div>
+            
+            <div class="budget-overall" style="margin-top: 1.5rem; justify-content: flex-start; gap: 2rem;">
+              <div class="form-group" style="flex: 1;">
+                <label for="input-log-desc">Add Iteration Notes</label>
+                <input type="text" id="input-log-desc" class="input-custom" placeholder="e.g. Polished zero-gravity parameters and aligned WPM rates.">
+              </div>
+              <div class="form-group" style="width: 100px;">
+                <label for="input-log-score">Score</label>
+                <input type="number" id="input-log-score" class="input-custom" value="95" min="50" max="100">
+              </div>
+              <button id="btn-logger-add" class="btn btn-primary" style="align-self: flex-end; height: 42px;">
+                + Save Version Draft
+              </button>
+            </div>
+          </div>
+        </div>
+      </section>
+
+      <!-- ============================================== -->
+      <!-- DASHBOARD 5: FRESHER AUDIENCE ANALYZER         -->
+      <!-- ============================================== -->
+      <section id="panel-audience-analyzer" class="tab-content">
+        <div class="dashboard-grid">
+          <!-- Survey statistics -->
+          <div class="glass-card flex-col gap-1">
+            <div class="card-title">📊 Freshers Survey Database (Audience Split)</div>
+            <div class="budget-overall" style="flex-wrap: wrap; gap: 1rem;">
+              <div class="budget-stat">
+                <span class="val-label">CSE Split</span>
+                <span id="anal-lbl-cse" class="val-number" style="color: var(--accent-color)">40%</span>
+              </div>
+              <div class="budget-stat">
+                <span class="val-label">ECE Split</span>
+                <span id="anal-lbl-ece" class="val-number" style="color: #06b6d4">30%</span>
+              </div>
+              <div class="budget-stat">
+                <span class="val-label">MECH Split</span>
+                <span id="anal-lbl-mech" class="val-number" style="color: #10b981">20%</span>
+              </div>
+              <div class="budget-stat">
+                <span class="val-label">CIVIL Split</span>
+                <span id="anal-lbl-civil" class="val-number" style="color: #fbbf24">10%</span>
+              </div>
+            </div>
+
+            <!-- Taste indicators -->
+            <div class="budget-bar-group" style="margin-top: 1rem;">
+              <div class="budget-item">
+                <div class="item-meta"><span>Synthwave Lovers preference</span><span id="anal-prog-synth">60%</span></div>
+                <div class="prog-bar"><div id="anal-bar-synth" class="prog-fill fill-decor" style="width: 60%"></div></div>
+              </div>
+              <div class="budget-item">
+                <div class="item-meta"><span>EDM / Pop Beats preference</span><span id="anal-prog-edm">40%</span></div>
+                <div class="prog-bar"><div id="anal-bar-edm" class="prog-fill fill-audio" style="width: 40%"></div></div>
+              </div>
+            </div>
+          </div>
+
+          <!-- Add new survey sample -->
+          <div class="glass-card flex-col gap-1">
+            <div class="card-title">🗳️ Register Student Profile Survey Sample</div>
+            <div class="form-group">
+              <label for="select-anal-dept">Student Department</label>
+              <select id="select-anal-dept" class="theme-selector-dropdown">
+                <option value="CSE">CSE</option>
+                <option value="ECE">ECE</option>
+                <option value="MECH">MECH</option>
+                <option value="CIVIL">CIVIL</option>
+              </select>
+            </div>
+            
+            <div class="form-group">
+              <label for="select-anal-taste">Music Preference</label>
+              <select id="select-anal-taste" class="theme-selector-dropdown">
+                <option value="Synthwave">Synthwave / Retro</option>
+                <option value="EDM">EDM / Pop</option>
+              </select>
+            </div>
+            
+            <button id="btn-anal-add" class="btn btn-primary" style="margin-top: 1rem;">
+              + Register Sample Vote
+            </button>
+          </div>
+        </div>
+      </section>
+
+      <!-- ============================================== -->
+      <!-- DASHBOARD 6: GOOGLE MEET VOTING SIMULATOR      -->
+      <!-- ============================================== -->
+      <section id="panel-meet-voting" class="tab-content">
+        <div class="dashboard-grid">
+          <!-- Dial Gauge display -->
+          <div class="glass-card flex-col gap-2 align-center justify-center" style="text-align: center;">
+            <div class="card-title" style="width: 100%">📊 Simulated Meeting Consensus</div>
+            
+            <div class="progress-circle">
+              <svg>
+                <circle class="bg" cx="75" cy="75" r="70" style="stroke: rgba(239, 68, 68, 0.2);"></circle>
+                <circle id="meet-circle" class="progress" cx="75" cy="75" r="70" style="stroke: #10b981; stroke-dasharray: 440; stroke-dashoffset: 88;"></circle>
+              </svg>
+              <div class="progress-text">
+                <div id="meet-percent-lbl" class="progress-number" style="color: #10b981;">80%</div>
+                <div class="progress-label">Would Attend</div>
+              </div>
+            </div>
+
+            <div class="budget-overall" style="width: 100%">
+              <div class="budget-stat">
+                <span class="val-label" style="color: #10b981">WOULD ATTEND</span>
+                <span id="meet-lbl-attend" class="val-number" style="color: #10b981">8</span>
+              </div>
+              <div class="budget-stat">
+                <span class="val-label" style="color: #ef4444">WOULD SKIP</span>
+                <span id="meet-lbl-skip" class="val-number" style="color: #ef4444">2</span>
+              </div>
+            </div>
+          </div>
+
+          <!-- Comment generation feeds -->
+          <div class="glass-card flex-col gap-1">
+            <div class="card-title justify-between">
+              <span>💬 Live Audience Reaction chat</span>
+              <button id="btn-meet-simulate" class="btn btn-primary" style="padding: 0.35rem 0.75rem; font-size: 0.8rem;">
+                + Trigger Vote Comment
+              </button>
+            </div>
+            
+            <div id="meet-chat-logs" class="sentiment-chat-feed">
+              <!-- Dynamically populated comments -->
+            </div>
+          </div>
+        </div>
+      </section>
+
+      <!-- ============================================== -->
+      <!-- DASHBOARD 7: WHATSAPP GROUP HUB                -->
+      <!-- ============================================== -->
+      <section id="panel-whatsapp-hub" class="tab-content">
+        <div class="dashboard-grid">
+          <!-- QR Canvas -->
+          <div class="glass-card flex-col gap-1 align-center justify-center" style="text-align: center;">
+            <div class="card-title" style="width: 100%">📢 WhatsApp Compulsory QR Invite</div>
+            <div style="background: white; padding: 1rem; border-radius: 12px; display: inline-block;">
+              <canvas id="hub-qr-canvas" width="160" height="160"></canvas>
+            </div>
+            <div class="form-group" style="width: 100%; margin-top: 1rem;">
+              <input type="text" id="hub-qr-link" class="input-custom" value="https://chat.whatsapp.com/google-banana-fresher-party" style="text-align: center;">
+            </div>
+            <button id="btn-hub-qr-dl" class="btn" style="width: 100%;">💾 Download Invite QR</button>
+          </div>
+
+          <!-- Scheduler Post list -->
+          <div class="glass-card flex-col gap-1">
+            <div class="card-title">📅 Social Announcement Queue</div>
+            <div id="hub-schedule-container" class="timeline">
+              <!-- Dynamically populated items -->
+            </div>
+          </div>
+        </div>
+      </section>
+
+      <!-- ============================================== -->
+      <!-- DASHBOARD 8: PERSONA ADAPTER                   -->
+      <!-- ============================================== -->
+      <section id="panel-persona-adapter" class="tab-content">
+        <div class="dashboard-grid">
+          <!-- Control selector buttons -->
+          <div class="glass-card flex-col gap-1">
+            <div class="card-title">🎭 Adaptive Speech Styles</div>
+            <div class="form-group">
+              <label>Select Speaking Persona Vibe</label>
+              <div class="btn-group-grid" id="persona-style-group">
+                <button class="tag-btn selected" data-persona="Hype DJ">Space DJ / MC</button>
+                <button class="tag-btn" data-persona="Astronaut Commander">Astronaut Commander</button>
+                <button class="tag-btn" data-persona="Retro Video Game Boss">Arcade Player One</button>
+              </div>
+            </div>
+            
+            <div class="form-group">
+              <label for="select-persona-tone">Welcome Tone Vibe</label>
+              <select id="select-persona-tone" class="theme-selector-dropdown">
+                <option value="Highly Energetic">Highly Energetic</option>
+                <option value="Persuasive & Persisting">Persuasive & Persisting</option>
+                <option value="Mystery & Adventure">Mystery & Adventure</option>
+              </select>
+            </div>
+            
+            <button id="btn-persona-compile" class="btn btn-primary" style="margin-top: 1.5rem;">
+              ✨ Generate Persona Speech Hook
+            </button>
+          </div>
+
+          <!-- Speech Script Output -->
+          <div class="glass-card flex-col gap-1">
+            <div class="card-title">🗣️ Structured Welcoming Script</div>
+            <div id="persona-speech-output" class="prompt-output-box" style="min-height: 220px; white-space: pre-wrap;">
+              Select a persona above and trigger the compilation scripts...
+            </div>
+            <div class="prompt-actions">
+              <button id="btn-persona-copy" class="btn">📋 Copy Hook</button>
+            </div>
+          </div>
+        </div>
+      </section>
+
+      <!-- ============================================== -->
+      <!-- DASHBOARD 9: ACTIVITY XP PLANNER               -->
+      <!-- ============================================== -->
+      <section id="panel-activity-planner" class="tab-content">
+        <div class="dashboard-grid">
+          <!-- Activities detail forms -->
+          <div class="glass-card flex-col gap-1" style="grid-column: span 2;">
+            <div class="card-title">🏆 Gamified XP Quests Configuration</div>
+            <div class="item-list" id="activity-quests-container">
+              <!-- Dynamically populated quest lists -->
+            </div>
+            
+            <div class="budget-overall" style="margin-top: 1rem; gap: 1rem;">
+              <div class="form-group" style="flex: 1;">
+                <label for="input-quest-title">Quest Title</label>
+                <input type="text" id="input-quest-title" class="input-custom" placeholder="e.g. Scavenger Hunt Level 2">
+              </div>
+              <div class="form-group" style="flex: 1;">
+                <label for="input-quest-desc">Rules / Objectives</label>
+                <input type="text" id="input-quest-desc" class="input-custom" placeholder="Find pixel tree tags using coordinates grids">
+              </div>
+              <button id="btn-quest-add" class="btn btn-primary" style="align-self: flex-end; height: 42px;">
+                + Add Quest
+              </button>
+            </div>
+          </div>
+        </div>
+      </section>
+
+      <!-- ============================================== -->
+      <!-- DASHBOARD 10: SPEECH RATE ANALYZER              -->
+      <!-- ============================================== -->
+      <section id="panel-speech-analyzer" class="tab-content">
+        <div class="dashboard-grid">
+          <!-- Speech Input details -->
+          <div class="glass-card flex-col gap-1">
+            <div class="card-title">⏱️ Script Timing Analytics</div>
+            <div class="form-group">
+              <label for="speech-analyzer-text">Paste Script Text</label>
+              <textarea id="speech-analyzer-text" class="textarea-custom" style="height: 180px;"></textarea>
+            </div>
+            
+            <div class="form-group">
+              <label for="slider-speech-speed">Speaking Speed (WPM: <span id="lbl-speech-wpm">130</span>)</label>
+              <input type="range" id="slider-speech-speed" min="100" max="180" step="5" value="130" class="input-custom">
+            </div>
+          </div>
+
+          <!-- Speed analysis cards -->
+          <div class="glass-card flex-col gap-1 align-center justify-center">
+            <div class="card-title" style="width: 100%">📈 Tempo Pacing Outputs</div>
+            <div class="budget-overall" style="width: 100%; margin-bottom: 1.5rem;">
+              <div class="budget-stat">
+                <span class="val-label">ESTIMATED DURATION</span>
+                <span id="speech-lbl-est-time" class="val-number" style="color: var(--accent-color)">0.00s</span>
+              </div>
+              <div class="budget-stat">
+                <span class="val-label">PACING HEALTH</span>
+                <span id="speech-lbl-health" class="val-number" style="color: #10b981">Perfect</span>
+              </div>
+            </div>
+            <p class="text-secondary" style="font-size: 0.85rem; text-align: center;">
+              A WPM between 120 and 150 ensures maximum clarity during a 60-second room pitch!
+            </p>
+          </div>
+        </div>
+      </section>
+
+      <!-- ============================================== -->
+      <!-- DASHBOARD 11: CUE SHEET TIMELINE               -->
+      <!-- ============================================== -->
+      <section id="panel-chronology-sheet" class="tab-content">
+        <div class="dashboard-grid">
+          <!-- Cue timeline list -->
+          <div class="glass-card flex-col gap-1" style="grid-column: span 2;">
+            <div class="card-title">🕒 Chronology Stage Cues (6:00 PM – 10:30 PM)</div>
+            <div class="item-list" id="cue-timeline-container" style="max-height: 350px; overflow-y: auto;">
+              <!-- Dynamic queue logs -->
+            </div>
+            
+            <div class="budget-overall" style="margin-top: 1rem; gap: 1.5rem; justify-content: flex-start;">
+              <div class="form-group" style="width: 100px;">
+                <label for="input-cue-time">Time</label>
+                <input type="text" id="input-cue-time" class="input-custom" value="06:00 PM">
+              </div>
+              <div class="form-group" style="flex: 1;">
+                <label for="input-cue-act">Activity Details</label>
+                <input type="text" id="input-cue-act" class="input-custom" placeholder="Warp speed laser lighting testing check.">
+              </div>
+              <div class="form-group" style="width: 120px;">
+                <label for="select-cue-light">Lights preset</label>
+                <select id="select-cue-light" class="theme-selector-dropdown">
+                  <option value="Neon Blue">Neon Blue</option>
+                  <option value="Spotlight">Spotlight</option>
+                  <option value="Laser Ray">Laser Ray</option>
+                </select>
+              </div>
+              <button id="btn-cue-add" class="btn btn-primary" style="align-self: flex-end; height: 42px;">
+                + Add Cue Item
+              </button>
+            </div>
+          </div>
+        </div>
+      </section>
+
+      <!-- ============================================== -->
+      <!-- DASHBOARD 12: BUDGET & PROPOSALS               -->
+      <!-- ============================================== -->
+      <section id="panel-logistics-proposal" class="tab-content">
+        <div class="dashboard-grid">
+          <!-- Budget trackers sliders -->
+          <div class="glass-card flex-col gap-1">
+            <div class="card-title">💰 Budget Spent Category Adjuster</div>
+            <div class="form-group">
+              <label for="slider-budget-decor">Decor spent (<span id="lbl-budget-decor">$0</span>)</label>
+              <input type="range" id="slider-budget-decor" min="100" max="2000" step="50" value="800" class="input-custom">
+            </div>
+            <div class="form-group">
+              <label for="slider-budget-audio">Audio spent (<span id="lbl-budget-audio">$0</span>)</label>
+              <input type="range" id="slider-budget-audio" min="100" max="2000" step="50" value="1200" class="input-custom">
+            </div>
+            <div class="form-group">
+              <label for="slider-budget-prizes">Prizes spent (<span id="lbl-budget-prizes">$0</span>)</label>
+              <input type="range" id="slider-budget-prizes" min="100" max="2000" step="50" value="500" class="input-custom">
+            </div>
+            
+            <div class="budget-overall" style="margin-top: 1rem;">
+              <div class="budget-stat">
+                <span class="val-label">TOTAL SPENT BUDGET</span>
+                <span id="budget-logistics-total" class="val-number">$0</span>
+              </div>
+            </div>
+          </div>
+
+          <!-- Proposal Doc sheet overlay -->
+          <div class="glass-card flex-col gap-1">
+            <div class="card-title">🤝 Corporate Deck Pitch Proposal</div>
+            <div id="proposal-document-deck" class="quote-box" style="font-family: serif; color: white; background: #0f172a; padding: 1.5rem; border-radius: 8px;">
+              <h3 style="text-align: center; border-bottom: 2px solid white; padding-bottom: 0.5rem; margin-bottom: 1rem;">SPONSORSHIP DECK</h3>
+              <p>This document verifies that <strong id="deck-lbl-sponsor">Red Bull</strong> pledges a financial support of <strong id="deck-lbl-contrib">$1,500</strong> for the university fresher event: <strong id="deck-lbl-theme-ref">Galactic Carnival</strong>.</p>
+              <br>
+              <p>Benefits include: <span id="deck-lbl-benefits-list">Logo on Poster, VIP lounge access, shoutout on stage</span>.</p>
+              <br>
+              <p style="text-align: right; margin-top: 1.5rem; font-style: italic;">Verified by Google Gemini Dashboard</p>
+            </div>
+            
+            <button id="btn-proposal-print" class="btn" style="margin-top: 1rem; align-self: center;">
+              🖨️ Print Proposal Document
+            </button>
+          </div>
+        </div>
+      </section>
+
+      <!-- ============================================== -->
+      <!-- DASHBOARD 13: SUBMISSION COMPILER              -->
+      <!-- ============================================== -->
+      <section id="panel-submission-compiler" class="tab-content">
+        <div class="dashboard-grid">
+          <!-- Submission list audits -->
+          <div class="glass-card flex-col gap-1" style="grid-column: span 2;">
+            <div class="card-title">⚡ Hackathon Submission Auditor & Exporter</div>
+            <div class="checklist-container">
+              <div class="checklist-item checked" data-key="concept">
+                <div class="checklist-left">
+                  <div class="checkbox-custom"></div>
+                  <div class="checklist-text">
+                    <h4>Core Concept & Welcome Message Verified</h4>
+                    <p>Details successfully customized in Theme Explorer and Persona Adapter.</p>
+                  </div>
+                </div>
+              </div>
+              
+              <div class="checklist-item checked" data-key="games">
+                <div class="checklist-left">
+                  <div class="checkbox-custom"></div>
+                  <div class="checklist-text">
+                    <h4>3 Immersive Games Outlined</h4>
+                    <p>Verified in Quest Planner with customized rule arrays.</p>
+                  </div>
+                </div>
+              </div>
+              
+              <div class="checklist-item checked" data-key="poster">
+                <div class="checklist-left">
+                  <div class="checkbox-custom"></div>
+                  <div class="checklist-text">
+                    <h4>Nano Banana AI Poster Attached</h4>
+                    <p>Visual preview compiled inside 3D Poster Simulator viewer.</p>
+                  </div>
+                </div>
+              </div>
+            </div>
+            
+            <button id="btn-submission-download" class="btn btn-primary" style="margin-top: 1.5rem; width: 100%;">
+              📦 Compile & Export Submission Package (.zip)
+            </button>
+          </div>
+        </div>
+      </section>
+
+      <!-- ============================================== -->
+      <!-- DASHBOARD 14: SWAG HOODIE DESIGNER             -->
+      <!-- ============================================== -->
+      <section id="panel-swag-designer" class="tab-content">
+        <div class="dashboard-grid">
+          <!-- Designer Controls -->
+          <div class="glass-card flex-col gap-1">
+            <div class="card-title">🛍️ Swag Procurement Details</div>
+            <div class="form-group">
+              <label for="input-swag-item">Item Category</label>
+              <input type="text" id="input-swag-item" class="input-custom" value="Space Hoodie">
+            </div>
+            <div class="form-group">
+              <label for="input-swag-count">Order Volume (Count)</label>
+              <input type="number" id="input-swag-count" class="input-custom" value="120" min="10">
+            </div>
+            <div class="form-group">
+              <label for="input-swag-cost">Cost ($)</label>
+              <input type="number" id="input-swag-cost" class="input-custom" value="1500" min="50">
+            </div>
+            
+            <button id="btn-swag-add" class="btn btn-primary" style="margin-top: 1rem;">
+              + Add Swag Item Order
+            </button>
+          </div>
+
+          <!-- Swag items lists -->
+          <div class="glass-card flex-col gap-1">
+            <div class="card-title">📋 Swag Delivery Ledger</div>
+            <div id="swag-items-list" class="spotify-tracks-list">
+              <!-- Dynamically populated items -->
+            </div>
+          </div>
+        </div>
+      </section>
+
+      <!-- ============================================== -->
+      <!-- DASHBOARD 15: 3D POSTER SIMULATOR              -->
+      <!-- ============================================== -->
+      <section id="panel-poster-simulator" class="tab-content">
+        <div class="dashboard-grid">
+          <!-- 3D lighting simulation frame -->
+          <div class="glass-card flex-col align-center justify-center">
+            <div class="card-title" style="width: 100%">🚀 virtual Campus 3D Preview Frame</div>
+            
+            <!-- Virtual environment viewport frame box -->
+            <div class="marketing-stand-frame">
+              <div class="stand-inner-canvas" id="sim-3d-box" style="transition: transform 0.5s ease; width: 220px; height: 300px;">
+                <!-- Simulated Poster image -->
+                <img id="sim-poster-img" src="/src/assets/hero.png" alt="Generated Poster" style="width: 100%; height: 100%; object-fit: cover;">
+                <div id="sim-poster-fallback" class="poster-placeholder" style="display: none; padding: 2rem;">
+                  <span class="poster-placeholder-icon">🎨</span>
+                  <p>Upload Poster to preview in 3D frame</p>
+                </div>
+              </div>
+              <div class="stand-feet-left"></div>
+              <div class="stand-feet-right"></div>
+            </div>
+          </div>
+
+          <!-- Adjusters controls -->
+          <div class="glass-card flex-col gap-1">
+            <div class="card-title">🎛️ Virtual Environment Controllers</div>
+            <div class="form-group">
+              <label for="slider-sim-glow">Neon Signage Glow Intensity (<span id="lbl-sim-glow">50%</span>)</label>
+              <input type="range" id="slider-sim-glow" min="10" max="100" step="5" value="50" class="input-custom">
+            </div>
+            <div class="form-group">
+              <label for="slider-sim-fog">Volumetric Fog Density (<span id="lbl-sim-fog">20%</span>)</label>
+              <input type="range" id="slider-sim-fog" min="0" max="80" step="5" value="20" class="input-custom">
+            </div>
+            <div class="form-group">
+              <label for="select-sim-light">3D Ambient Environment Light</label>
+              <select id="select-sim-light" class="theme-selector-dropdown">
+                <option value="Day">Daylight</option>
+                <option value="Night">Midnight laser glow</option>
+                <option value="Twilight">Vaporwave sunset</option>
+              </select>
+            </div>
+            
+            <!-- Selfie File Upload Slot directly attached here too -->
+            <div class="form-group" style="margin-top: 1rem;">
+              <label for="sim-poster-upload">Upload generated image file</label>
+              <label for="sim-poster-upload" class="btn btn-primary" style="text-align: center; display: block; cursor: pointer;">
+                📷 Upload Poster Image
+              </label>
+              <input type="file" id="sim-poster-upload" style="display: none;">
+            </div>
+          </div>
+        </div>
+      </section>
+      
+    </main>
+  </div>
+
+  <script type="module" src="/src/main.js"></script>
+</body>
+</html>
