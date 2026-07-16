@@ -1,5 +1,6 @@
 import { storage } from './modules/storage.js';
 import { prompterOptions, buildPrompt, pickRandomPromptTags } from './modules/prompter.js';
+import { firebaseAuth } from './modules/firebase.js';
 
 // --- State Management ---
 let appState = storage.load();
@@ -275,34 +276,48 @@ function setupLoginPortal() {
   const btnGoogle = document.getElementById('btn-google-signin');
   if (btnGoogle) {
     btnGoogle.addEventListener('click', () => {
-      const name = prompt("Google Sign-In Verification (Firebase Simulator):", "Priyan Sen");
-      if (!name) return;
+      const selectedRole = els.selectLoginRole.value;
 
-      appState.organizer = { 
-        name: name, 
-        email: `${name.toLowerCase().replace(/\s+/g, '')}@gmail.com`, 
-        role: "Lead Organizer" 
-      };
-      
-      storage.save(appState);
-      syncOrganizerProfileHeader();
-      
-      els.screenLogin.classList.add('hidden');
-      els.screenMain.classList.remove('hidden');
+      firebaseAuth.signInWithGoogle()
+        .then((result) => {
+          appState.organizer = { 
+            name: result.user.displayName, 
+            email: result.user.email, 
+            role: selectedRole,
+            avatar: result.user.photoURL
+          };
+          
+          storage.save(appState);
+          syncOrganizerProfileHeader();
+          
+          els.screenLogin.classList.add('hidden');
+          els.screenMain.classList.remove('hidden');
+        })
+        .catch((error) => {
+          console.error("Google Auth error:", error);
+        });
     });
   }
 
   const btnSignOut = document.getElementById('btn-sign-out');
   if (btnSignOut) {
     btnSignOut.addEventListener('click', () => {
-      appState.organizer = null;
-      storage.save(appState);
-      
-      els.inputLoginName.value = '';
-      els.inputLoginEmail.value = '';
-      
-      els.screenMain.classList.add('hidden');
-      els.screenLogin.classList.remove('hidden');
+      firebaseAuth.logout().then(() => {
+        appState.organizer = null;
+        storage.save(appState);
+        
+        els.inputLoginName.value = '';
+        els.inputLoginEmail.value = '';
+        
+        els.screenMain.classList.add('hidden');
+        els.screenLogin.classList.remove('hidden');
+      }).catch((err) => {
+        console.warn("Sign out failed, resetting UI states:", err);
+        appState.organizer = null;
+        storage.save(appState);
+        els.screenMain.classList.add('hidden');
+        els.screenLogin.classList.remove('hidden');
+      });
     });
   }
 }
